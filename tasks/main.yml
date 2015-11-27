@@ -1,0 +1,49 @@
+---
+- set_fact:
+    arch: linux_amd64
+  when: ansible_system == "Linux"
+
+- set_fact:
+    arch: darwin_amd64
+  when: ansible_system == "Darwin"
+
+- name: Downloads Package
+  get_url: >
+    url="{{ consul_template_install.download_location}}/v{{ consul_template_app.version }}/{{ consul_template_app.name }}_{{ consul_template_app.version }}_{{ arch }}.zip"
+    dest="/tmp/{{ consul_template_app.name }}_{{ consul_template_app.version }}_{{ arch }}.zip"
+    mode=0755
+    force={{ consul_template_install.force_download | default(false)}}
+    validate_certs=no
+  sudo: no
+  tags:
+    - hashicorp
+    - consul_template
+    - install
+    - download
+
+- name: Unpacks to location
+  unarchive: >
+    src=/tmp/{{ consul_template_app.name }}_{{ consul_template_app.version }}_{{ arch }}.zip
+    dest={{ consul_template_install.dir }}
+    copy=no
+    mode=755
+  sudo: yes
+  tags:
+    - hashicorp
+    - consul_template
+    - install
+    - unarchive
+
+- name: Fix permissions on files (Workaround while waiting for 2.0)
+  file: path={{ consul_template_install.dir }}/{{ item }}
+    owner={{ file_owner | default('root') }}
+    group={{ file_group | default('staff') }}
+    mode=755
+  sudo: yes
+  with_items:
+    - "{{ consul_template_install.file_list }}"
+  tags:
+    - hashicorp
+    - consul_template
+    - install
+    - workaround

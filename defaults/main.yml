@@ -1,0 +1,11 @@
+---
+consul_template_app:
+  name: consul_template
+  version: 0.11.0
+
+consul_template_install:
+  dir : /usr/local/bin
+  download_location: https://github.com/hashicorp/consul-template/releases/download
+
+  file_list:
+    - consul-template
