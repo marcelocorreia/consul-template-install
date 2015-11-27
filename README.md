@@ -1,6 +1,6 @@
 # consul-template-install
 
-Installs [Hasicorp's Consul Template] (https://github.com/hashicorp/consul-template)
+Installs [Hashicorp's Consul Template] (https://github.com/hashicorp/consul-template)
 
 
 
